@@ -107,6 +107,43 @@ tools:
         sort_by: {type: string, enum: [relevance, lastUpdatedDate, submittedDate], default: "relevance", description: "Sắp xếp"}
       required: [query]
 
+  - name: sentiment
+    description: "Phân tích cảm xúc (positive/negative/neutral) của một đoạn văn bản hoặc danh sách bài đăng. Dùng sau timeline hoặc social_search để đánh giá tông giọng chung. Hoàn toàn local, không cần API."
+    parameters:
+      type: object
+      properties:
+        text: {type: string, default: "", description: "Văn bản cần phân tích"}
+        items:
+          type: array
+          default: []
+          description: "Danh sách items (từ timeline/social_search/lookup) — mỗi item cần có summary hoặc title"
+          items:
+            type: object
+            properties:
+              title: {type: string}
+              summary: {type: string}
+      required: []
+
+  - name: extract_links
+    description: "Trích xuất tất cả URL từ nội dung HTML đã fetch. Dùng sau fetch khi user muốn tìm các link trong bài viết hoặc trang web."
+    parameters:
+      type: object
+      properties:
+        html: {type: string, default: "", description: "Nội dung HTML thô (từ output của fetch)"}
+        base_url: {type: string, default: "", description: "URL gốc để resolve relative links"}
+        max_links: {type: integer, default: 20, description: "Số link tối đa trả về"}
+      required: [html]
+
+  - name: summarize
+    description: "Tóm tắt một đoạn văn bản thành danh sách bullet points ngắn gọn. Dùng khi user muốn tóm tắt nội dung từ URL hoặc bài báo mà không cần gọi API ngoài."
+    parameters:
+      type: object
+      properties:
+        text: {type: string, default: "", description: "Nội dung cần tóm tắt"}
+        max_bullets: {type: integer, default: 5, description: "Số bullet tối đa"}
+        language: {type: string, enum: [vi, en], default: "vi", description: "Ngôn ngữ output"}
+      required: [text]
+
   - name: paper_text
     description: "Lấy nội dung text của một bài báo."
     parameters:
