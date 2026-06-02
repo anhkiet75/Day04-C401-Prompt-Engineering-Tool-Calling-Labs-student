@@ -1,0 +1,22 @@
+{
+  "transcript_id": "v3_openrouter_20260602T150230082438",
+  "version": "v3",
+  "artifact_version": "v3+p88a7e366a3c8+td158de199ddc",
+  "prompt_hash": "88a7e366a3c896c1facd69c3fcaab5c4774918cd90aa4e1497efa55cca4e6d73",
+  "tools_hash": "d158de199ddc37247b8ecdf869a3f0e71078837d6b36c9eaca2608d71f021f43",
+  "provider": "openrouter",
+  "model": null,
+  "history_window": 5,
+  "max_tool_rounds": 4,
+  "created_at": "2026-06-02T15:02:30",
+  "updated_at": "2026-06-02T15:02:30",
+  "turns": [
+    {
+      "turn_index": 1,
+      "user": "hello",
+      "assistant_text": "Hello! How can I assist you today?",
+      "tool_events": [],
+      "ended_at": "2026-06-02T15:02:30"
+    }
+  ]
+}

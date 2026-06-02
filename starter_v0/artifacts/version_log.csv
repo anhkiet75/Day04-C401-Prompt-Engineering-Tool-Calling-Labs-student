@@ -1,1 +1,5 @@
 version,author,changed_artifact,artifact_version,prompt_hash,tools_hash,reason,hypothesis,metric_before,metric_after,run_file
+v0,team,system_prompt.md,v0+pf0c107a9d7a1+t011c271ef0bb,f0c107a9d7a1,011c271ef0bb,baseline run,prompt gốc không có routing rule nào,0.65,0.65,runs/v0_B_base_openrouter_20260602T124317056458.json
+v1,team,system_prompt.md,v1+p2ad1e05df176+t011c271ef0bb,2ad1e05df176,011c271ef0bb,fix wrong_arg_value cho lookup tool,thêm rule: query phải dùng đúng từ khóa gốc không paraphrase; topic phải set explicit,0.65,0.70,runs/v1_B_base_openrouter_20260602T141330520585.json
+v2,team,system_prompt.md,v2+p391c52111c4a+t011c271ef0bb,391c52111c4a,011c271ef0bb,fix missing clarify + carryover,thêm clarify rules cho 3 trường hợp (thiếu handle/URL/send confirm); thêm timeframe carryover rule,0.70,0.80,runs/v2_B_base_openrouter_20260602T142854678185.json
+v3,team,system_prompt.md,v3+p88a7e366a3c8+t011c271ef0bb,88a7e366a3c8,011c271ef0bb,fix clarify response_type + timeframe mapping,thêm response_type=text cho handle/URL query; response_type=yes_no cho send confirm; map hôm nay→day explicit,0.80,1.0,runs/v3_B_base_openrouter_20260602T143226647407.json

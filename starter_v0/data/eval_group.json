@@ -3,5 +3,146 @@
   "dataset_role": "group",
   "description": "Case do NHÓM tự viết thêm để cover thêm trường hợp. Mỗi case cần: id, phase='B', query HOẶC turns, failure_type (thuộc allowed_failure_types), và expect (tool_calls[...] hoặc no_tool=true). Nên kèm metadata.what_it_tests.",
   "allowed_failure_types": ["wrong_tool", "wrong_arg_value", "wrong_boundary", "unnecessary_tool", "out_of_scope", "missing_info"],
-  "cases": []
+  "cases": [
+    {
+      "id": "G01_summarize_routing",
+      "phase": "B",
+      "query": "Tóm tắt đoạn văn này cho mình: 'Artificial intelligence is transforming every industry. Companies are investing billions in AI research. Large language models have become increasingly capable. AI assistants can now write code, compose music, and generate images. The pace of progress shows no sign of slowing down.'",
+      "failure_type": "wrong_tool",
+      "expect": {
+        "tool_calls": [{"name": "summarize", "args": {}}]
+      },
+      "metadata": {
+        "what_it_tests": "User cung cấp text trực tiếp và muốn tóm tắt → agent phải chọn summarize, không phải fetch hay lookup."
+      }
+    },
+    {
+      "id": "G02_lookup_general_not_news",
+      "phase": "B",
+      "query": "Transformer architecture là gì?",
+      "failure_type": "wrong_arg_value",
+      "expect": {
+        "tool_calls": [{"name": "lookup", "args": {"topic": "general"}}]
+      },
+      "metadata": {
+        "what_it_tests": "Câu hỏi kiến thức chung (không phải tin tức) → topic=general, không phải topic=news."
+      }
+    },
+    {
+      "id": "G03_out_of_scope_translation",
+      "phase": "B",
+      "query": "Dịch câu này sang tiếng Anh: 'Hôm nay trời đẹp quá'",
+      "failure_type": "out_of_scope",
+      "expect": {
+        "no_tool": true
+      },
+      "metadata": {
+        "what_it_tests": "Dịch thuật không liên quan research/social/web → không gọi tool nào, trả lời text thuần."
+      }
+    },
+    {
+      "id": "G04_top_tweets_search_type",
+      "phase": "B",
+      "query": "Tìm các bài đăng trending nhất về blockchain tuần này",
+      "failure_type": "wrong_arg_value",
+      "expect": {
+        "tool_calls": [{"name": "social_search", "args": {"query": "blockchain", "search_type": "Top"}}]
+      },
+      "metadata": {
+        "what_it_tests": "'trending/phổ biến nhất' → search_type=Top; query phải là đúng từ khóa 'blockchain' không thêm từ."
+      }
+    },
+    {
+      "id": "G05_fetch_then_summarize_boundary",
+      "phase": "B",
+      "query": "Đọc bài này và tóm tắt giúp mình: https://example.com/ai-report-2026",
+      "failure_type": "wrong_tool",
+      "expect": {
+        "tool_calls": [{"name": "fetch", "args": {"url": "https://example.com/ai-report-2026"}}]
+      },
+      "metadata": {
+        "what_it_tests": "Đã có URL cụ thể → fetch trước. Agent không được gọi lookup hay summarize ngay mà chưa có nội dung."
+      }
+    },
+    {
+      "id": "G06_missing_handle_then_timeline",
+      "phase": "B",
+      "turns": [
+        {"role": "user", "content": "Xem tweet của nhà khoa học AI nổi tiếng mà mình hay đọc đó"},
+        {"role": "assistant", "content": null, "tool_calls": [{"name": "clarify", "args": {"question": "Bạn có thể cho mình biết handle Twitter của nhà khoa học đó không?", "response_type": "text"}}]},
+        {"role": "tool", "name": "clarify", "content": "Andrej Karpathy, handle là karpathy"},
+        {"role": "user", "content": "karpathy"}
+      ],
+      "failure_type": "missing_info",
+      "expect": {
+        "tool_calls": [{"name": "timeline", "args": {"screenname": "karpathy"}}]
+      },
+      "metadata": {
+        "what_it_tests": "Multi-turn: thiếu handle → agent hỏi clarify → user cung cấp → agent gọi timeline với handle đúng."
+      }
+    },
+    {
+      "id": "G07_confirm_before_send_then_send",
+      "phase": "B",
+      "turns": [
+        {"role": "user", "content": "Đăng lên Telegram: 'Bản tin AI hôm nay đã sẵn sàng!'"},
+        {"role": "assistant", "content": null, "tool_calls": [{"name": "clarify", "args": {"question": "Bạn có muốn gửi nội dung này lên Telegram không?", "response_type": "yes_no"}}]},
+        {"role": "tool", "name": "clarify", "content": "yes"},
+        {"role": "user", "content": "Có, gửi đi"}
+      ],
+      "failure_type": "wrong_boundary",
+      "expect": {
+        "tool_calls": [{"name": "send", "args": {"confirmed": true}}]
+      },
+      "metadata": {
+        "what_it_tests": "Multi-turn: user muốn send → agent hỏi confirm → user confirm → agent gọi send với confirmed=true."
+      }
+    },
+    {
+      "id": "G08_missing_url_then_fetch",
+      "phase": "B",
+      "turns": [
+        {"role": "user", "content": "Tóm tắt bài báo về AI Act mà mình vừa bookmark"},
+        {"role": "assistant", "content": null, "tool_calls": [{"name": "clarify", "args": {"question": "Bạn có thể chia sẻ URL của bài báo đó không?", "response_type": "text"}}]},
+        {"role": "tool", "name": "clarify", "content": "https://example.com/ai-act-2026"},
+        {"role": "user", "content": "https://example.com/ai-act-2026"}
+      ],
+      "failure_type": "missing_info",
+      "expect": {
+        "tool_calls": [{"name": "fetch", "args": {"url": "https://example.com/ai-act-2026"}}]
+      },
+      "metadata": {
+        "what_it_tests": "Multi-turn: user nói 'bài báo vừa bookmark' không có URL → clarify → user cung cấp URL → fetch đúng URL đó."
+      }
+    },
+    {
+      "id": "G09_topic_carryover_multiturn",
+      "phase": "B",
+      "turns": [
+        {"role": "user", "content": "Tìm tin tức về robotics hôm nay"},
+        {"role": "assistant", "content": null, "tool_calls": [{"name": "lookup", "args": {"query": "robotics", "topic": "news", "timeframe": "day"}}]},
+        {"role": "tool", "name": "lookup", "content": "{\"items\": [{\"title\": \"Robotics news\", \"summary\": \"Latest robotics\"}]}"},
+        {"role": "user", "content": "Còn về autonomous vehicles thì sao? Vẫn tin hôm nay nhé"}
+      ],
+      "failure_type": "wrong_arg_value",
+      "expect": {
+        "tool_calls": [{"name": "lookup", "args": {"query": "autonomous vehicles", "topic": "news", "timeframe": "day"}}]
+      },
+      "metadata": {
+        "what_it_tests": "Multi-turn carryover: user thay query nhưng giữ nguyên timeframe=day và topic=news từ turn trước."
+      }
+    },
+    {
+      "id": "G10_unnecessary_tool_out_of_scope_math",
+      "phase": "B",
+      "query": "Tính cho mình 15% của 2.500.000 đồng",
+      "failure_type": "out_of_scope",
+      "expect": {
+        "no_tool": true
+      },
+      "metadata": {
+        "what_it_tests": "Tính toán số học đơn giản hoàn toàn ngoài scope research agent → không gọi tool nào, trả lời trực tiếp."
+      }
+    }
+  ]
 }

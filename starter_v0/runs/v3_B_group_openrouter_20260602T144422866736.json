@@ -1,0 +1,811 @@
+{
+  "run_id": "v3_B_group_openrouter_20260602T144422866736",
+  "version": "v3",
+  "artifact_version": "v3+p88a7e366a3c8+td158de199ddc",
+  "prompt_hash": "88a7e366a3c896c1facd69c3fcaab5c4774918cd90aa4e1497efa55cca4e6d73",
+  "tools_hash": "d158de199ddc37247b8ecdf869a3f0e71078837d6b36c9eaca2608d71f021f43",
+  "phase": "B",
+  "suite": "group",
+  "provider": "openrouter",
+  "model": "openai/gpt-4o-mini",
+  "system_prompt": "/Users/takiet/Documents/projects/ai_thuc_chien_2026/repo/Day04-C401-Prompt-Engineering-Tool-Calling-Labs-student/starter_v0/artifacts/system_prompt.md",
+  "tools": "/Users/takiet/Documents/projects/ai_thuc_chien_2026/repo/Day04-C401-Prompt-Engineering-Tool-Calling-Labs-student/starter_v0/artifacts/tools.yaml",
+  "eval_cases": "data/eval_group.json",
+  "dataset_id": "day04_v2_research_group",
+  "dataset_role": "group",
+  "description": "Case do NHÓM tự viết thêm để cover thêm trường hợp. Mỗi case cần: id, phase='B', query HOẶC turns, failure_type (thuộc allowed_failure_types), và expect (tool_calls[...] hoặc no_tool=true). Nên kèm metadata.what_it_tests.",
+  "generated_at": "2026-06-02T14:44:22",
+  "summary": {
+    "total_cases": 10,
+    "measured_cases": 10,
+    "provider_error_cases": 0,
+    "passed_cases": 10,
+    "case_accuracy": 1.0,
+    "tool_routing_accuracy": 1.0,
+    "argument_accuracy": 1.0,
+    "multiturn_accuracy": 1.0,
+    "failure_counts": {},
+    "observed_mismatch_counts": {}
+  },
+  "results": [
+    {
+      "id": "G01_summarize_routing",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "what_it_tests": "User cung cấp text trực tiếp và muốn tóm tắt → agent phải chọn summarize, không phải fetch hay lookup."
+      },
+      "input": "Tóm tắt đoạn văn này cho mình: 'Artificial intelligence is transforming every industry. Companies are investing billions in AI research. Large language models have become increasingly capable. AI assistants can now write code, compose music, and generate images. The pace of progress shows no sign of slowing down.'",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "summarize",
+            "args": {}
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "summarize",
+            "args": {
+              "text": "Artificial intelligence is transforming every industry. Companies are investing billions in AI research. Large language models have become increasingly capable. AI assistants can now write code, compose music, and generate images. The pace of progress shows no sign of slowing down.",
+              "max_bullets": 5,
+              "language": "vi"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "summarize",
+          "args": {
+            "text": "Artificial intelligence is transforming every industry. Companies are investing billions in AI research. Large language models have become increasingly capable. AI assistants can now write code, compose music, and generate images. The pace of progress shows no sign of slowing down.",
+            "max_bullets": 5,
+            "language": "vi"
+          },
+          "result": {
+            "tool": "summarize",
+            "bullets": [
+              "• Artificial intelligence is transforming every industry.",
+              "• Companies are investing billions in AI research.",
+              "• Large language models have become increasingly capable.",
+              "• AI assistants can now write code, compose music, and generate images.",
+              "• The pace of progress shows no sign of slowing down."
+            ],
+            "bullet_count": 5,
+            "word_count": 41
+          }
+        }
+      ]
+    },
+    {
+      "id": "G02_lookup_general_not_news",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "what_it_tests": "Câu hỏi kiến thức chung (không phải tin tức) → topic=general, không phải topic=news."
+      },
+      "input": "Transformer architecture là gì?",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "topic": "general"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "Transformer architecture",
+              "topic": "general"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "lookup",
+          "args": {
+            "query": "Transformer architecture",
+            "topic": "general"
+          },
+          "result": {
+            "tool": "web_search",
+            "query": "Transformer architecture",
+            "topic": "general",
+            "timeframe": "week",
+            "items": []
+          }
+        }
+      ]
+    },
+    {
+      "id": "G03_out_of_scope_translation",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "what_it_tests": "Dịch thuật không liên quan research/social/web → không gọi tool nào, trả lời text thuần."
+      },
+      "input": "Dịch câu này sang tiếng Anh: 'Hôm nay trời đẹp quá'",
+      "expect": {
+        "no_tool": true
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [],
+        "actual_text": "Câu dịch sang tiếng Anh là: \"The weather is so beautiful today.\"",
+        "case_failure_type": "out_of_scope",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": []
+    },
+    {
+      "id": "G04_top_tweets_search_type",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "what_it_tests": "'trending/phổ biến nhất' → search_type=Top; query phải là đúng từ khóa 'blockchain' không thêm từ."
+      },
+      "input": "Tìm các bài đăng trending nhất về blockchain tuần này",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "query": "blockchain",
+              "search_type": "Top"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "query": "blockchain",
+              "search_type": "Top",
+              "limit": 5
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "social_search",
+          "args": {
+            "query": "blockchain",
+            "search_type": "Top",
+            "limit": 5
+          },
+          "result": {
+            "tool": "search_tweets",
+            "query": "blockchain",
+            "search_type": "Top",
+            "items": [
+              {
+                "title": "🚨 BULLISH: GOOGLE HAS CHOSEN ITS BLOCKCHAIN FOR AGENTIC PAYMENT ITS NOT @dfinity OR @Algorand",
+                "summary": "🚨 BULLISH: GOOGLE HAS CHOSEN ITS BLOCKCHAIN FOR AGENTIC PAYMENT ITS NOT @dfinity OR @Algorand\n\n@Google SELECTED @SuiNetwork AS A LAUNCH PARTNER FOR AP2, DESIGNED TO LET AI AGENTS EXECUTE PAYMENTS AND COMMERCE ON BEHALF OF USERS. https://t.co/4mf5igSUPA",
+                "url": "https://x.com/NoodlesFi/status/2060326102321573960",
+                "source": "@NoodlesFi",
+                "date": "Fri May 29 11:43:16 +0000 2026",
+                "metrics": {
+                  "favorites": 570,
+                  "retweets": 87,
+                  "views": "71432"
+                }
+              },
+              {
+                "title": "Someone gave Claude $200 and one mission: MAKE MONEY ON POLYMARKET",
+                "summary": "Someone gave Claude $200 and one mission: MAKE MONEY ON POLYMARKET\n\nNo human input. No strategy handed to it. Just an AI, a browser, and a wallet\n\nIt started by scanning the blockchain for the sharpest traders on the platform. Found the wallets quietly printing money. Then it began mirroring their moves in real time\n\n10 hours later: $200 → $3,000\n\nThis isn’t a thought experiment. It’s not a demo reel. It’s running right now, while you read this\n\nThe agents are already here. Most people just haven’t noticed yet",
+                "url": "https://x.com/martynov014/status/2061494580554723746",
+                "source": "@martynov014",
+                "date": "Mon Jun 01 17:06:23 +0000 2026",
+                "metrics": {
+                  "favorites": 126,
+                  "retweets": 13,
+                  "views": "24808"
+                }
+              },
+              {
+                "title": "Learning Pills 💊 Ep.45",
+                "summary": "Learning Pills 💊 Ep.45\n\nSending crypto? ⚠️\n\nChoosing the correct blockchain network is an important part of every transfer.\n\n#LearningPills https://t.co/9v7oULhhQn",
+                "url": "https://x.com/BinanceAngels/status/2061704367615648142",
+                "source": "@BinanceAngels",
+                "date": "Tue Jun 02 07:00:00 +0000 2026",
+                "metrics": {
+                  "favorites": 20,
+                  "retweets": 2,
+                  "views": "284"
+                }
+              },
+              {
+                "title": "Gary Gensler taught blockchain at MIT. The crypto community actually cheered when he got appointed SEC chair. Then he sp",
+                "summary": "Gary Gensler taught blockchain at MIT. The crypto community actually cheered when he got appointed SEC chair. Then he spent four years suing every exchange in sight and calling every token a security.\n\nNow he is on a CNBC interview claiming the CFTC should not regulate sports betting because it is not their expertise.\n\nExpertise. From the guy who knew exactly what crypto was and came for it anyway.\n\nWe are glad you are NOT in the SEC anymore. We are not sad to see you go.",
+                "url": "https://x.com/LarkDavis/status/2059930257461813573",
+                "source": "@LarkDavis",
+                "date": "Thu May 28 09:30:19 +0000 2026",
+                "metrics": {
+                  "favorites": 288,
+                  "retweets": 21,
+                  "views": "60421"
+                }
+              },
+              {
+                "title": "🚨 HOLY SH*T – SWIFT JUST FLIPPED THE SWITCH ON CRYPTO RAILS! AND ITS HAPPENING THIS MONTH",
+                "summary": "🚨 HOLY SH*T – SWIFT JUST FLIPPED THE SWITCH ON CRYPTO RAILS! AND ITS HAPPENING THIS MONTH\n\nOver 50 MASSIVE banks (JPMorgan, Bank of America, Deutsche Bank, Bank of China & more) are now hooking into SWIFT’s secret BLOCKCHAIN shared ledger for 24/7 tokenized cross-border payments.\n\nYOU WILL NEVER GUESS WHAT BLOCKCHAIN THEY CHOSE... 🤯",
+                "url": "https://x.com/MinusWells/status/2061467412948754724",
+                "source": "@MinusWells",
+                "date": "Mon Jun 01 15:18:26 +0000 2026",
+                "metrics": {
+                  "favorites": 272,
+                  "retweets": 47,
+                  "views": "67800"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "G05_fetch_then_summarize_boundary",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "what_it_tests": "Đã có URL cụ thể → fetch trước. Agent không được gọi lookup hay summarize ngay mà chưa có nội dung."
+      },
+      "input": "Đọc bài này và tóm tắt giúp mình: https://example.com/ai-report-2026",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://example.com/ai-report-2026"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://example.com/ai-report-2026"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "fetch",
+          "args": {
+            "url": "https://example.com/ai-report-2026"
+          },
+          "result": {
+            "tool": "read_url",
+            "url": "https://example.com/ai-report-2026",
+            "items": [
+              {
+                "title": "Example Domain",
+                "url": "https://example.com/ai-report-2026",
+                "source": "example.com",
+                "summary": "# Example Domain\n\nThis domain is for use in documentation examples without needing permission. Avoid use in operations.\n\n[Learn more](https://iana.org/domains/example)"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "G06_missing_handle_then_timeline",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "what_it_tests": "Multi-turn: thiếu handle → agent hỏi clarify → user cung cấp → agent gọi timeline với handle đúng."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Xem tweet của nhà khoa học AI nổi tiếng mà mình hay đọc đó"
+        },
+        {
+          "role": "assistant",
+          "content": null,
+          "tool_calls": [
+            {
+              "name": "clarify",
+              "args": {
+                "question": "Bạn có thể cho mình biết handle Twitter của nhà khoa học đó không?",
+                "response_type": "text"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "name": "clarify",
+          "content": "Andrej Karpathy, handle là karpathy"
+        },
+        {
+          "role": "user",
+          "content": "karpathy"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "karpathy"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "karpathy",
+              "limit": 5
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "missing_info",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "timeline",
+          "args": {
+            "screenname": "karpathy",
+            "limit": 5
+          },
+          "result": {
+            "tool": "get_user_tweets",
+            "screenname": "karpathy",
+            "items": [
+              {
+                "title": "Personal update: I've joined Anthropic. I think the next few years at the frontier of LLMs will be especially formative.",
+                "summary": "Personal update: I've joined Anthropic. I think the next few years at the frontier of LLMs will be especially formative. I am very excited to join the team here and get back to R&amp;D. I remain deeply passionate about education and plan to resume my work on it in time.",
+                "url": "https://x.com/karpathy/status/2056753169888334312",
+                "source": "@karpathy",
+                "date": "Tue May 19 15:05:42 +0000 2026",
+                "metrics": {
+                  "favorites": 149506,
+                  "retweets": 11161,
+                  "views": "27352216"
+                }
+              },
+              {
+                "title": "This works really well btw, at the end of your query ask your LLM to \"structure your response as HTML\", then view the ge",
+                "summary": "This works really well btw, at the end of your query ask your LLM to \"structure your response as HTML\", then view the generated file in your browser. I've also had some success asking the LLM to present its output as slideshows, etc.\n\nMore generally, imo audio is the human-preferred input to AIs but vision (images/animations/video) is the preferred output from them. Around a ~third of our brains are a massively parallel processor dedicated to vision, it is the 10-lane superhighway of information into brain. As AI improves, I think we'll see a progression that takes advantage:\n\n1) raw text (hard/effortful to read)\n2) markdown (bold, italic, headings, tables, a bit easier on the eyes) <-- current default\n3) HTML (still procedural with underlying code, but a lot more flexibility on the graphics, layout, even interactivity) <-- early but forming new good default\n...4,5,6,...\nn) interactive neural videos/simulations\n\nImo the extrapolation (though the technology doesn't exist just yet) ends in some kind of interactive videos generated directly by a diffusion neural net. Many open questions as to how exact/procedural \"Software 1.0\" artifacts (e.g. interactive simulations) may be woven together with neural artifacts (diffusion grids), but generally something in the direction of the recently viral https://t.co/z21CP5iQfu\n\nThere are also improvements necessary and pending at the input. Audio nor text nor video alone are not enough, e.g. I feel a need to point/gesture to things on the screen, similar to all the things you would do with a person physically next to you and your computer screen.\n\nTLDR The input/output mind meld between humans and AIs is ongoing and there is a lot of work to do and significant progress to be made, way before jumping all the way into neuralink-esque BCIs and all that. For what's worth exploring at the current stage, hot tip try ask for HTML.",
+                "url": "https://x.com/karpathy/status/2053872850101285137",
+                "source": "@karpathy",
+                "date": "Mon May 11 16:20:21 +0000 2026",
+                "metrics": {
+                  "favorites": 19140,
+                  "retweets": 2014,
+                  "views": "3751715"
+                }
+              },
+              {
+                "title": "This is the the quote I've been citing a lot recently.",
+                "summary": "This is the the quote I've been citing a lot recently.",
+                "url": "https://x.com/karpathy/status/2049907410303865030",
+                "source": "@karpathy",
+                "date": "Thu Apr 30 17:43:06 +0000 2026",
+                "metrics": {
+                  "favorites": 46518,
+                  "retweets": 4366,
+                  "views": "2553739"
+                }
+              },
+              {
+                "title": "Fireside chat at Sequoia Ascent 2026 from a ~week ago. Some highlights:",
+                "summary": "Fireside chat at Sequoia Ascent 2026 from a ~week ago. Some highlights:\n\nThe first theme I tried to push on is that LLMs are about a lot more than just speeding up what existed before (e.g. coding). Three examples of new horizons:\n\n1. menugen: an app that can be fully engulfed by LLMs, with no classical code needed: input an image, output an image and an LLM can natively do the thing.\n2. install .md skills instead of install .sh scripts. Why create a complex Software 1.0 bash script for e.g. installing a piece of software if you can write the installation out in words and say \"just show this to your LLM\".  The LLM is an advanced interpreter of English and can intelligently target installation to your setup, debug everything inline, etc.\n3. LLM knowledge bases as an example of something that was *impossible* with classical code because it's computation over unstructured data (knowledge) from arbitrary sources and in arbitrary formats, including simply text articles etc.\n\nI pushed on these because in every new paradigm change, the obvious things are always in the realm of speeding up or somehow improving what existed, but here we have examples of functionality that either suddenly perhaps shouldn't even exist (1,2), or was fundamentally not possible before (3).\n\nThe second (ongoing) theme is trying to explain the pattern of jaggedness in LLMs. How it can be true that a single artifact will simultaneously 1) coherently refactor a 100,000-line code base *and* 2) tell you to walk to the car wash to wash your car. I previously wrote about the source of this as having to do with verifiability of a domain, here I expand on this as having to also do with economics because revenue/TAM dictates what the frontier labs choose to package into training data distributions during RL. You're either in the data distribution (on the rails of the RL circuits) and flying or you're off-roading in the jungle with a machete, in relative terms. Still not 100% satisfied with this, but it's an ongoing struggle to build an accurate model of LLM capabilities if you wish to practically take advantage of their power while avoiding their pitfalls, which brings me to...\n\nLast theme is the agent-native economy. The decomposition of products and services into sensors, actuators and logic (split up across all of 1.0/2.0/3.0 computing paradigms), how we can make information maximally legible to LLMs, some words on the quickly emerging agentic engineering and its skill set, related hiring practices, etc., possibly even hints/dreams of fully neural computing handling the vast majority of computation with some help from (classical) CPU coprocessors.",
+                "url": "https://x.com/karpathy/status/2049903821095354523",
+                "source": "@karpathy",
+                "date": "Thu Apr 30 17:28:50 +0000 2026",
+                "metrics": {
+                  "favorites": 6044,
+                  "retweets": 794,
+                  "views": "1164778"
+                }
+              },
+              {
+                "title": "RT @status_effects: New work with @AlecRad and @DavidDuvenaud:",
+                "summary": "RT @status_effects: New work with @AlecRad and @DavidDuvenaud:\n\nHave you ever dreamed of talking to someone from the past? Introducing talk…",
+                "url": "https://x.com/karpathy/status/2049180863036813717",
+                "source": "@karpathy",
+                "date": "Tue Apr 28 17:36:04 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 391,
+                  "views": "84"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "G07_confirm_before_send_then_send",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "what_it_tests": "Multi-turn: user muốn send → agent hỏi confirm → user confirm → agent gọi send với confirmed=true."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Đăng lên Telegram: 'Bản tin AI hôm nay đã sẵn sàng!'"
+        },
+        {
+          "role": "assistant",
+          "content": null,
+          "tool_calls": [
+            {
+              "name": "clarify",
+              "args": {
+                "question": "Bạn có muốn gửi nội dung này lên Telegram không?",
+                "response_type": "yes_no"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "name": "clarify",
+          "content": "yes"
+        },
+        {
+          "role": "user",
+          "content": "Có, gửi đi"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "send",
+            "args": {
+              "confirmed": true
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "send",
+            "args": {
+              "text": "Bản tin AI hôm nay đã sẵn sàng!",
+              "confirmed": true
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_boundary",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "send",
+          "args": {
+            "text": "Bản tin AI hôm nay đã sẵn sàng!",
+            "confirmed": true
+          },
+          "result": {
+            "tool": "send_telegram",
+            "status": "sent"
+          }
+        }
+      ]
+    },
+    {
+      "id": "G08_missing_url_then_fetch",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "what_it_tests": "Multi-turn: user nói 'bài báo vừa bookmark' không có URL → clarify → user cung cấp URL → fetch đúng URL đó."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tóm tắt bài báo về AI Act mà mình vừa bookmark"
+        },
+        {
+          "role": "assistant",
+          "content": null,
+          "tool_calls": [
+            {
+              "name": "clarify",
+              "args": {
+                "question": "Bạn có thể chia sẻ URL của bài báo đó không?",
+                "response_type": "text"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "name": "clarify",
+          "content": "https://example.com/ai-act-2026"
+        },
+        {
+          "role": "user",
+          "content": "https://example.com/ai-act-2026"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://example.com/ai-act-2026"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://example.com/ai-act-2026"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "missing_info",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "fetch",
+          "args": {
+            "url": "https://example.com/ai-act-2026"
+          },
+          "result": {
+            "tool": "read_url",
+            "url": "https://example.com/ai-act-2026",
+            "items": [
+              {
+                "title": "Example Domain",
+                "url": "https://example.com/ai-act-2026",
+                "source": "example.com",
+                "summary": "# Example Domain\n\nThis domain is for use in documentation examples without needing permission. Avoid use in operations.\n\n[Learn more](https://iana.org/domains/example)"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "G09_topic_carryover_multiturn",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "what_it_tests": "Multi-turn carryover: user thay query nhưng giữ nguyên timeframe=day và topic=news từ turn trước."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tìm tin tức về robotics hôm nay"
+        },
+        {
+          "role": "assistant",
+          "content": null,
+          "tool_calls": [
+            {
+              "name": "lookup",
+              "args": {
+                "query": "robotics",
+                "topic": "news",
+                "timeframe": "day"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "name": "lookup",
+          "content": "{\"items\": [{\"title\": \"Robotics news\", \"summary\": \"Latest robotics\"}]}"
+        },
+        {
+          "role": "user",
+          "content": "Còn về autonomous vehicles thì sao? Vẫn tin hôm nay nhé"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "autonomous vehicles",
+              "topic": "news",
+              "timeframe": "day"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "autonomous vehicles",
+              "topic": "news",
+              "timeframe": "day"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "lookup",
+          "args": {
+            "query": "autonomous vehicles",
+            "topic": "news",
+            "timeframe": "day"
+          },
+          "result": {
+            "tool": "web_search",
+            "query": "autonomous vehicles",
+            "topic": "news",
+            "timeframe": "day",
+            "items": [
+              {
+                "title": "I'm not afraid of Waymo. I hope all drivers will be robots. | Your Turn - USA Today",
+                "url": "https://www.usatoday.com/story/opinion/voices/2026/06/01/waymo-future-rideshare-uber-lyft/90280956007/",
+                "source": "usatoday.com",
+                "summary": "I don't regret my vote Get the latest views Submit a column. # I'm not afraid of Waymo. I hope all drivers will be robots. ## 'I will never take a ride from Waymo again.' Are autonomous vehicles the future? As long as you don't need to catch a flight, your vehicle is at zero risk of being attacked, you're in an area with no construction zones, and you don't live in a cul-de-sac or a flood-prone area, robotaxis are easily the way to travel. Driverless cars like Waymo, the popular autonomous rideshare company with thousands of vehicles across the country, are here to stay, but not without some fits and starts. Just in the past month, the company announced the recall of thousands of its vehicles due to a software issue that could cause them to drive into floods. For many of you, the driverless future can't come fast enough. I hope someday that all vehicles are autonomous.",
+                "score": 0.9511422
+              },
+              {
+                "title": "MARTAC, Mystic Powerboats to Expand ASV Production Capacity - Marine News Magazine",
+                "url": "https://www.marinelink.com/news/martac-mystic-powerboats-expand-asv-539802",
+                "source": "marinelink.com",
+                "summary": "# MARTAC, Mystic Powerboats to Expand ASV Production Capacity. (MARTAC), a provider of autonomous unmanned surface vehicles (USVs), and Mystic Power boats, a leader in high-performance composite vessel construction, announced a co-production partnership to increase MARTAC’s domestic production capacity to meet growing requirements from U.S. and allied customers. MARTAC’s partnership with Mystic is the first of several pending domestic co-production partnerships the company is finalizing that will support a expansion of its co-production framework. Demand for autonomous maritime systems is accelerating as defense and national security organizations expand their use of autonomous capabilities in distributed maritime operations, maritime domain awareness, logistics support and force protection. Mystic’s proven capabilities in epoxy resin infusion, carbon-fiber lamination and foam-core construction align directly with the materials and methods used in MARTAC’s Devil Ray and MANTAS platforms, making the company an ideal co-production partner for scaling autonomous vessel deliveries. Seasats today announced that a Lightfish uncrewed surface vessel (USV) has completed the first autonomous transit of the Taiwan Strait… 31 May 2026.",
+                "score": 0.64957863
+              },
+              {
+                "title": "Мач Индустриес мудофаа стартапи бир йилда ўз қийматини 4 бараварга оширди - Zamin.uz",
+                "url": "https://zamin.uz/en/technology/204655-defense-startup-mach-industries-quadruples-its-valuation-in-one-year.html",
+                "source": "zamin.uz",
+                "summary": "# Defense startup Mach Industries quadruples its valuation in one year. Mach Industries, a defense technology startup founded by 22-year-old Ethan Thornton, has raised $300 million in a Series C funding round. This is nearly four times higher than last year's figure—in June 2025, the company was valued at $470 million. According to Mach Industries founder Ethan Thornton, developing autonomous weapons systems requires significant capital, which is why the company initially planned to raise $200 million, but due to high investor interest, this amount was increased to $300 million. Founded in 2023, Mach Industries is currently working on five autonomous vehicles: Viper (a VTOL jet aircraft), Glide (a high-altitude glider), Stratos (an aerial surveillance platform), Dart (a low-cost anti-drone interceptor), and Pike (a long-range munition launcher). Furthermore, the startup recently signed a new contract with the US Department of Defense (Pentagon). News » Technology » Defense startup Mach Industries quadruples its valuation in one year.",
+                "score": 0.5273165
+              },
+              {
+                "title": "Stellantis partners with Wayve on self-driving tech - CBT News",
+                "url": "https://www.cbtnews.com/stellantis-partners-with-wayve/",
+                "source": "cbtnews.com",
+                "summary": "Wayve’s AI Driver will integrate into Stellantis’ STLA AutoDrive platform, targeting a hands-free automated driving launch in North America by 2028. * Stellantis and Wayve will integrate AI-powered, hands-free automated driving into North American vehicles by 2028. * Stellantis designed the platform to scale across additional vehicle models and markets over time. Stellantis and Wayve have announced a strategic technology partnership to integrate Wayve’s AI Driver software into the STLA AutoDrive platform. The companies are targeting a hands-free, supervised automated driving launch in North America by 2028. The system operates at Level 2++, a supervised automated driving capability that goes beyond standard driver assistance but still requires the driver to remain ready to take control. “Our teams have already demonstrated how quickly the Wayve AI Driver can be integrated across Stellantis’ vehicle platforms, bringing up a prototype in less than 2 months,” said Alex Kendall, Co-founder and CEO of Wayve in a statement.",
+                "score": 0.38676345
+              },
+              {
+                "title": "Rivian boss on self-driving cars: \"level four is going to be here much sooner than people think\" - Top Gear",
+                "url": "https://www.topgear.com/car-news/big-reads/rivian-boss-self-driving-cars-level-four-going-be-here-much-sooner-people-think",
+                "source": "topgear.com",
+                "summary": "* Rivian boss on self-driving cars: \"level four is going to be here much sooner than people think\". If you thought Rivian’s first act was dramatic, wait to see what CEO RJ Scaringe is cooking up next... Rivian’s founder and CEO is with TG for an early drive in the new R2, on a route that skirts the company’s modernist HQ, an hour south of LA. The R2 is the smaller Rivian, the follow-up to the impressive pure electric R1 pickup and SUV. That’s succeeded where Ford’s F-150 Lightning faltered, and has proven a hit with well-heeled Musk-averse liberals in the bicoastal areas of the US. Dynamically it’s right up there with the likes of the new iX3, which is no mean feat given how much BMW has poured into the Neue Klasse project. It’ll manufacture the R2 and R3, and has been designed to operate with very high levels of automation, backed up by a new Rivian robotics spinoff company.",
+                "score": 0.31405056
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "G10_unnecessary_tool_out_of_scope_math",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "what_it_tests": "Tính toán số học đơn giản hoàn toàn ngoài scope research agent → không gọi tool nào, trả lời trực tiếp."
+      },
+      "input": "Tính cho mình 15% của 2.500.000 đồng",
+      "expect": {
+        "no_tool": true
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [],
+        "actual_text": "15% của 2.500.000 đồng là:\n\n\\[ 2.500.000 \\times 0.15 = 375.000 \\text{ đồng} \\]\n\nVậy 15% của 2.500.000 đồng là 375.000 đồng.",
+        "case_failure_type": "out_of_scope",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": []
+    }
+  ]
+}
