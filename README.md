@@ -257,9 +257,8 @@ Do not submit `.env` or API keys.
 
 ## Checkpoint 4h
 
-- 14:30 - Run baseline + build UI
-- 15:00 - Improve prompt/tools for v1 + build at least 1 tool
-- 15:30 - Write team eval cases + improve v2
-- 16:00 - Improve for v3
+- 15:00 - Run baseline + build UI
+- 15:30 - Improve prompt/tools for v1 + build at least 1 tool
+- 16:00 - Write team eval cases + improve v2
 - 16:30 - Team showdown
-- 17:30 - Write report
+- 17:30 - Improve v3 + Write report
