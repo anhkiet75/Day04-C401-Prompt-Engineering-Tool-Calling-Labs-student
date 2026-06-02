@@ -13,16 +13,6 @@ Trong lab này, nhóm build một research agent nhỏ nhưng chạy thật. Age
 5. Tự viết thêm eval case để đo những lỗi nhóm quan tâm.
 6. Viết report dựa trên log thật, không dựa vào cảm giác.
 
-## Điểm xuất phát cố tình chưa hoàn thiện
-
-Starter này **chưa tốt sẵn** — đó là chủ đích:
-
-- **Tên tool mơ hồ.** Các tool mang tên chung chung (`clarify`, `timeline`, `social_search`, `lookup`, `fetch`, `format`, `send`, `policy`, `papers`, `paper_text`) — chỉ gợi *một phần* chức năng.
-- **Description sơ sài.** `artifacts/tools.yaml` mô tả mỗi tool một dòng, không có quy tắc routing, không map tên người → handle, không nói convention args, không nói ranh giới xác nhận.
-- **System prompt bản năng.** `artifacts/system_prompt.md` là kiểu prompt một người mới hay viết. Chính những "bản năng" trong đó làm agent chọn sai.
-
-Baseline đo thật trên `eval_base` (provider `openrouter`, model `gpt-4o-mini`): **`case_accuracy ≈ 0.65` (13/20)**. Việc của nhóm là đọc log, đặt giả thuyết, sửa prompt/tool declaration để kéo điểm lên qua các vòng `v1`, `v2`, `v3`.
-
 ## Scope
 
 Nhiệm vụ bắt buộc:
@@ -42,7 +32,7 @@ Bonus:
 - Extra tools: `policy`, `papers`, `paper_text`.
 - UI: Streamlit hoặc Vercel.
 
-**Điểm thưởng (bonus point):** team nào làm **CẢ HAI** — dựng được UI **và** tự viết thêm tool mới (ngoài các tool có sẵn, kèm `TOOL.md` + đăng ký trong `tools/__init__.py` + `tools.yaml`) — sẽ được cộng điểm thưởng.
+**Điểm thưởng (bonus point):** team nào làm **CẢ HAI** — dựng được UI **và** tự viết thêm hơn 3 tool mới (ngoài các tool có sẵn, kèm `TOOL.md` + đăng ký trong `tools/__init__.py` + `tools.yaml`) — sẽ được cộng điểm thưởng.
 
 ## Folder Map
 
@@ -74,7 +64,7 @@ starter_v0/
 
 ## Tool Tracks
 
-Tên tool là mặc định mơ hồ; phần mô tả dưới đây chỉ nói tool *làm gì*, không nói *khi nào dùng* — đó là phần nhóm phải tự định nghĩa trong prompt/declaration.
+Phần mô tả dưới đây tóm tắt mỗi tool *làm gì*. Việc xác định *khi nào dùng* tool nào là phần nhóm tự định nghĩa trong prompt và tool declaration.
 
 Core tools:
 
